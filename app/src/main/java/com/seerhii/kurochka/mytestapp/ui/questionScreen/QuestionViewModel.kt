@@ -1,4 +1,7 @@
 package com.seerhii.kurochka.mytestapp.ui.questionScreen
 
-class QuestionViewModel {
+import androidx.lifecycle.ViewModel
+
+class QuestionViewModel() : ViewModel(){
+
 }

@@ -1,4 +1,7 @@
 package com.seerhii.kurochka.mytestapp.ui.startScreen
 
-class StartViewModel {
+import androidx.lifecycle.ViewModel
+
+class StartViewModel() : ViewModel() {
+
 }

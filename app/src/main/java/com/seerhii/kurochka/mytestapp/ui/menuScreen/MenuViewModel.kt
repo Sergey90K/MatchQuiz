@@ -1,4 +1,7 @@
 package com.seerhii.kurochka.mytestapp.ui.menuScreen
 
-class MenuViewModel {
+import androidx.lifecycle.ViewModel
+
+class MenuViewModel(): ViewModel() {
+
 }
