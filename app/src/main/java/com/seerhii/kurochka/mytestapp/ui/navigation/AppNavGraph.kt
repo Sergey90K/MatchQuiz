@@ -25,7 +25,9 @@ fun AppNavGraph(navController: NavHostController) {
         composable(route = MenuDestination.route) {
             MenuScreen(
                 navigateToQuiz = { navController.navigate(QuizDestination.route) },
-                navigateToQuestion = { navController.navigate(QuestionDestination.route) })
+                navigateToQuestion = { navController.navigate(QuestionDestination.route) },
+                navigateToBack = { navController.navigateUp() }
+            )
         }
         composable(route = QuizDestination.route) {
             QuizScreen()

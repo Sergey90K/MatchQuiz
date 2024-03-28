@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.seerhii.kurochka.mytestapp.R
-import com.seerhii.kurochka.mytestapp.ui.menuScreen.MenuDestination
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 import com.seerhii.kurochka.mytestapp.ui.untils.GifImage
@@ -49,10 +49,10 @@ fun StartScreen(navigateToMenuScreen: () -> Unit) {
                 ) {
                     GifImage(imageID = R.drawable.welcome1)
                     Button(
-                        onClick = {navigateToMenuScreen()},
+                        onClick = { navigateToMenuScreen() },
                         enabled = true
                     ) {
-                        Text("START")
+                        Text(stringResource(R.string.start))
                     }
                 }
             }
@@ -64,6 +64,6 @@ fun StartScreen(navigateToMenuScreen: () -> Unit) {
 @Composable
 fun GreetingPreview() {
     MyTestAppTheme {
-        StartScreen {  }
+        StartScreen({ })
     }
 }

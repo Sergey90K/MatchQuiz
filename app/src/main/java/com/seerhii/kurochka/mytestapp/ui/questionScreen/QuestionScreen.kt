@@ -1,5 +1,6 @@
 package com.seerhii.kurochka.mytestapp.ui.questionScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,17 +18,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.seerhii.kurochka.mytestapp.R
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
+import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 
 object QuestionDestination : NavigationDestination {
     override val route = "question"
     override val titleRes = R.string.question_screen
 }
-
 
 @Composable
 fun QuestionScreen() {
@@ -52,11 +54,15 @@ fun QuestionScreen() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    IconButton(onClick = { /*TODO*/ }, Modifier.size(200.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                            contentDescription = "Description",
-                            modifier = Modifier.size(190.dp)
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        Modifier.size(dimensionResource(R.dimen.icon_button))
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ai),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(dimensionResource(R.dimen.icon_button))
                         )
                     }
                     Column(
@@ -70,7 +76,7 @@ fun QuestionScreen() {
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.Black,
                             textAlign = TextAlign.Start,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(dimensionResource(R.dimen.text_padding))
                         )
 
                         Text(
@@ -78,11 +84,19 @@ fun QuestionScreen() {
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.Black,
                             textAlign = TextAlign.Start,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(dimensionResource(R.dimen.text_padding))
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, apiLevel = 33)
+@Composable
+fun GreetingPreview() {
+    MyTestAppTheme {
+        QuestionScreen()
     }
 }

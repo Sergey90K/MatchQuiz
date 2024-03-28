@@ -24,11 +24,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.seerhii.kurochka.mytestapp.R
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
+import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 
 object MenuDestination : NavigationDestination {
     override val route = "menu"
@@ -36,7 +41,11 @@ object MenuDestination : NavigationDestination {
 }
 
 @Composable
-fun MenuScreen(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
+fun MenuScreen(
+    navigateToQuiz: () -> Unit,
+    navigateToQuestion: () -> Unit,
+    navigateToBack: () -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Red
@@ -49,37 +58,38 @@ fun MenuScreen(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
                 verticalAlignment = Alignment.Top
             ) {
                 IconButton(
-                    onClick = { /* doSomething() */ },
+                    onClick = { navigateToBack() },
                     Modifier
-                        .size(50.dp)
-                        .padding(2.dp)
+                        .size(dimensionResource(R.dimen.icon_size))
+                        .padding(dimensionResource(R.dimen.padding_small))
                 ) {
                     Icon(
                         Icons.Outlined.ArrowBack,
-                        contentDescription = "Localized description",
-                        Modifier.size(50.dp)
+                        contentDescription = stringResource(R.string.go_back),
+                        Modifier.size(dimensionResource(R.dimen.icon_size))
                     )
                 }
                 IconButton(
-                    onClick = { /* doSomething() */ },
+                    onClick = { },
                     Modifier
-                        .size(50.dp)
-                        .padding(2.dp)
+                        .size(dimensionResource(R.dimen.icon_size))
+                        .padding(dimensionResource(R.dimen.padding_small))
                 ) {
                     Icon(
                         Icons.Outlined.AccountCircle,
-                        contentDescription = "Localized description",
-                        Modifier.size(50.dp)
+                        contentDescription = stringResource(R.string.account_settings),
+                        Modifier.size(dimensionResource(R.dimen.icon_size))
                     )
                 }
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(5.dp), horizontalArrangement = Arrangement.Center
+                    .padding(dimensionResource(R.dimen.padding_medium)),
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Maths Tutor",
+                    text = stringResource(R.string.maths_tutor),
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     style = MaterialTheme.typography.labelLarge
@@ -96,32 +106,39 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(2.dp)
+            .padding(dimensionResource(R.dimen.padding_small))
     ) {
         Column {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(dimensionResource(R.dimen.padding_big)),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ShowCard(navigateToQuiz)
-                ShowCard({})
+                ShowCard(navigateToQuiz, R.drawable.mathsnew, stringResource(R.string.match_quiz))
+                ShowCard({}, R.drawable.ic_launcher_foreground, stringResource(R.string.learn))
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(dimensionResource(R.dimen.padding_big)),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ShowCard({})
-                ShowCard({})
+                ShowCard(
+                    { },
+                    R.drawable.ic_launcher_foreground,
+                    stringResource(R.string.multiplayer)
+                )
+                ShowCard({}, R.drawable.ic_launcher_foreground, stringResource(R.string.draw))
 
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(8.dp), horizontalArrangement = Arrangement.Center
+                    .padding(dimensionResource(R.dimen.padding_big)),
+                horizontalArrangement = Arrangement.Center
             ) {
-                ShowCard(navigateToQuestion)
+                ShowCard(navigateToQuestion, R.drawable.ai, stringResource(R.string.ai_chatbot))
             }
         }
     }
@@ -129,12 +146,15 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowCard(navigateTo: () -> Unit) {
+fun ShowCard(navigateTo: () -> Unit, idImage: Int, labelString: String) {
     Card(
-        colors = CardDefaults.cardColors(Color.LightGray),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.errorContainer),
         modifier = Modifier
-            .size(width = 180.dp, height = 200.dp)
-            .padding(5.dp),
+            .size(
+                width = dimensionResource(R.dimen.card_width),
+                height = dimensionResource(R.dimen.card_height)
+            )
+            .padding(dimensionResource(R.dimen.padding_medium)),
         onClick = { navigateTo() }
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -144,12 +164,26 @@ fun ShowCard(navigateTo: () -> Unit) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = ""
+                    painter = painterResource(id = idImage),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(dimensionResource(R.dimen.logo_size))
                 )
-                Text("Card content description", textAlign = TextAlign.Center)
+                Text(
+                    labelString,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelLarge, maxLines = 2,
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+                )
             }
-
         }
+    }
+}
+
+@Preview(showBackground = true, apiLevel = 33)
+@Composable
+fun GreetingPreview() {
+    MyTestAppTheme {
+        MenuScreen(navigateToQuiz = { /*TODO*/ }, navigateToQuestion = {}, navigateToBack = {})
     }
 }

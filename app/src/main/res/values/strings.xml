@@ -4,4 +4,15 @@
     <string name="menuscreen">Menu Screen\n</string>
     <string name="quiz_screen">Quiz Screen</string>
     <string name="question_screen">Question Screen</string>
+    <string name="ai_chatbot">AI \n Chatbot</string>
+    <string name="draw">Draw</string>
+    <string name="multiplayer">Multiplayer</string>
+    <string name="learn">Learn</string>
+    <string name="match_quiz">Match \n Quiz</string>
+    <string name="start">START</string>
+    <string name="go_back">Go back</string>
+    <string name="account_settings">Account settings</string>
+    <string name="maths_tutor">Maths Tutor</string>
+    <string name="submit">SUBMIT</string>
+    <string name="ai_icon">Ai icon</string>
 </resources>

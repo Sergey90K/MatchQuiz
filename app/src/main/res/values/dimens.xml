@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="padding_small">2dp</dimen>
+    <dimen name="padding_medium">5dp</dimen>
+    <dimen name="padding_big">8dp</dimen>
+    <dimen name="icon_size">50dp</dimen>
+    <dimen name="logo_size">100dp</dimen>
+    <dimen name="card_width">180dp</dimen>
+    <dimen name="card_height">200dp</dimen>
+    <dimen name="text_padding">16dp</dimen>
+    <dimen name="icon_button">200dp</dimen>
+    <dimen name="divider_padding">20dp</dimen>
+    <dimen name="padding_zero">0dp</dimen>
+</resources>
