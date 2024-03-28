@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyTestApp</string>
+    <string name="startscreen">StartScreen</string>
+    <string name="menuscreen">Menu Screen\n</string>
+    <string name="quiz_screen">Quiz Screen</string>
+    <string name="question_screen">Question Screen</string>
+</resources>
