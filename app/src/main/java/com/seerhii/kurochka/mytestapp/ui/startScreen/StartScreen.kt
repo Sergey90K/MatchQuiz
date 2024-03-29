@@ -13,9 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seerhii.kurochka.mytestapp.R
+import com.seerhii.kurochka.mytestapp.ui.AppViewModelProvider
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 import com.seerhii.kurochka.mytestapp.ui.untils.GifImage
@@ -26,7 +29,11 @@ object StartDestination : NavigationDestination {
 }
 
 @Composable
-fun StartScreen(navigateToMenuScreen: () -> Unit) {
+fun StartScreen(
+    startViewModel: StartViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToMenuScreen: () -> Unit
+) {
+    val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Blue
@@ -49,7 +56,10 @@ fun StartScreen(navigateToMenuScreen: () -> Unit) {
                 ) {
                     GifImage(imageID = R.drawable.welcome1)
                     Button(
-                        onClick = { navigateToMenuScreen() },
+                        onClick = {
+                            navigateToMenuScreen()
+                            startViewModel.playSoundIn(context)
+                        },
                         enabled = true
                     ) {
                         Text(stringResource(R.string.start))
@@ -64,6 +74,6 @@ fun StartScreen(navigateToMenuScreen: () -> Unit) {
 @Composable
 fun GreetingPreview() {
     MyTestAppTheme {
-        StartScreen({ })
+        //StartScreen({ })
     }
 }

@@ -1,5 +1,6 @@
 package com.seerhii.kurochka.mytestapp.ui.menuScreen
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,12 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seerhii.kurochka.mytestapp.R
+import com.seerhii.kurochka.mytestapp.ui.AppViewModelProvider
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 
@@ -43,8 +47,11 @@ object MenuDestination : NavigationDestination {
 fun MenuScreen(
     navigateToQuiz: () -> Unit,
     navigateToQuestion: () -> Unit,
-    navigateToBack: () -> Unit
+    navigateToBack: () -> Unit,
+    menuViewModel: MenuViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Blue
@@ -57,7 +64,10 @@ fun MenuScreen(
                 verticalAlignment = Alignment.Top
             ) {
                 IconButton(
-                    onClick = { navigateToBack() },
+                    onClick = {
+                        navigateToBack()
+                        menuViewModel.playSoundIn(context)
+                    },
                     Modifier
                         .size(dimensionResource(R.dimen.icon_size))
                         .padding(dimensionResource(R.dimen.padding_small))
@@ -69,7 +79,7 @@ fun MenuScreen(
                     )
                 }
                 IconButton(
-                    onClick = { },
+                    onClick = { menuViewModel.playSoundIn(context) },
                     Modifier
                         .size(dimensionResource(R.dimen.icon_size))
                         .padding(dimensionResource(R.dimen.padding_small))
@@ -95,13 +105,23 @@ fun MenuScreen(
                 )
             }
 
-            ShowAllCard(navigateToQuestion = navigateToQuestion, navigateToQuiz = navigateToQuiz)
+            ShowAllCard(
+                navigateToQuestion = navigateToQuestion,
+                navigateToQuiz = navigateToQuiz,
+                playSound = menuViewModel::playSoundIn,
+                context = context
+            )
         }
     }
 }
 
 @Composable
-fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
+fun ShowAllCard(
+    navigateToQuiz: () -> Unit,
+    navigateToQuestion: () -> Unit,
+    playSound: (Context) -> Unit,
+    context: Context
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -114,8 +134,20 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
                     .padding(dimensionResource(R.dimen.padding_big)),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ShowCard(navigateToQuiz, R.drawable.mathsnew, stringResource(R.string.match_quiz))
-                ShowCard({}, R.drawable.story, stringResource(R.string.learn))
+                ShowCard(
+                    navigateToQuiz,
+                    R.drawable.mathsnew,
+                    stringResource(R.string.match_quiz),
+                    playSound = playSound,
+                    context = context
+                )
+                ShowCard(
+                    {},
+                    R.drawable.story,
+                    stringResource(R.string.learn),
+                    playSound = playSound,
+                    context = context
+                )
             }
             Row(
                 Modifier
@@ -126,9 +158,17 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
                 ShowCard(
                     { },
                     R.drawable.artdraw,
-                    stringResource(R.string.multiplayer)
+                    stringResource(R.string.multiplayer),
+                    playSound = playSound,
+                    context = context
                 )
-                ShowCard({}, R.drawable.lessons, stringResource(R.string.draw))
+                ShowCard(
+                    {},
+                    R.drawable.lessons,
+                    stringResource(R.string.draw),
+                    playSound = playSound,
+                    context = context
+                )
 
             }
             Row(
@@ -137,7 +177,13 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
                     .padding(dimensionResource(R.dimen.padding_big)),
                 horizontalArrangement = Arrangement.Center
             ) {
-                ShowCard(navigateToQuestion, R.drawable.ai, stringResource(R.string.ai_chatbot))
+                ShowCard(
+                    navigateToQuestion,
+                    R.drawable.ai,
+                    stringResource(R.string.ai_chatbot),
+                    playSound = playSound,
+                    context = context
+                )
             }
         }
     }
@@ -145,7 +191,13 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowCard(navigateTo: () -> Unit, idImage: Int, labelString: String) {
+fun ShowCard(
+    navigateTo: () -> Unit,
+    idImage: Int,
+    labelString: String,
+    playSound: (Context) -> Unit,
+    context: Context
+) {
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.errorContainer),
         modifier = Modifier
@@ -154,7 +206,10 @@ fun ShowCard(navigateTo: () -> Unit, idImage: Int, labelString: String) {
                 height = dimensionResource(R.dimen.card_height)
             )
             .padding(dimensionResource(R.dimen.padding_medium)),
-        onClick = { navigateTo() }
+        onClick = {
+            playSound(context)
+            navigateTo()
+        }
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(
