@@ -1,5 +1,7 @@
 package com.seerhii.kurochka.mytestapp.ui.untils
 
+import android.content.Context
+import android.media.MediaPlayer
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -14,30 +16,34 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 
-    @Composable
-    fun GifImage(
-        imageID: Int,
-        modifier: Modifier = Modifier
-    ) {
-        val context = LocalContext.current
-        val imageLoader = ImageLoader.Builder(context)
-            .components {
-                if (Build.VERSION.SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
-                } else {
-                    add(GifDecoder.Factory())
-                }
+@Composable
+fun GifImage(
+    imageID: Int,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (Build.VERSION.SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
             }
-            .build()
-        Image(
-            painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(LocalContext.current).data(data = imageID)
-                    .apply<ImageRequest.Builder>(block = fun ImageRequest.Builder.() {
-                        size(Size.ORIGINAL)
-                    }).build(), imageLoader = imageLoader
-            ),
-            contentDescription = null,
-            modifier = Modifier.size(200.dp)
-        )
+        }
+        .build()
+    Image(
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(LocalContext.current).data(data = imageID)
+                .apply<ImageRequest.Builder>(block = fun ImageRequest.Builder.() {
+                    size(Size.ORIGINAL)
+                }).build(), imageLoader = imageLoader
+        ),
+        contentDescription = null,
+        modifier = Modifier.size(200.dp)
+    )
 
-    }
+}
+
+fun playSound(context: Context, soundFile: Int) {
+    MediaPlayer.create(context, soundFile).start()
+}

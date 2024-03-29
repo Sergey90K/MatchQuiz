@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,6 +34,7 @@ import com.seerhii.kurochka.mytestapp.ui.AppViewModelProvider
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 import com.seerhii.kurochka.mytestapp.ui.untils.GifImage
+import com.seerhii.kurochka.mytestapp.ui.untils.playSound
 
 object QuizDestination : NavigationDestination {
     override val route = "quiz"
@@ -50,6 +52,7 @@ fun QuizScreen(
     val inputFieldUiState by quizViewModel.inputField.collectAsStateWithLifecycle()
     val finishedQuizUiState by quizViewModel.finishedQuiz.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -82,7 +85,6 @@ fun QuizScreen(
                     ShowInputText(
                         inputFieldUiState = inputFieldUiState,
                         writeAnswer = quizViewModel::writeAnswer,
-                        checkAnswer = quizViewModel::checkAnswer
                     )
                     Divider(
                         Modifier.padding(
@@ -97,7 +99,7 @@ fun QuizScreen(
                             if (finishedQuizUiState) {
                                 navigateToBack()
                             } else {
-                                quizViewModel.checkAnswer()
+                                quizViewModel.checkAnswer(context)
                             }
                         },
                         enabled = true
@@ -105,7 +107,9 @@ fun QuizScreen(
                         if (finishedQuizUiState) {
                             Text(stringResource(R.string.exit))
                         } else {
-                            Text(stringResource(R.string.submit))
+                            Text(
+                                stringResource(R.string.submit)
+                            )
                         }
                     }
                 }
@@ -118,7 +122,6 @@ fun QuizScreen(
 fun ShowInputText(
     inputFieldUiState: String,
     writeAnswer: (String) -> Unit,
-    checkAnswer: () -> Unit
 ) {
     TextField(
         value = inputFieldUiState,
@@ -128,8 +131,8 @@ fun ShowInputText(
             unfocusedContainerColor = Color.Gray,
             disabledContainerColor = Color.White,
         ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        keyboardActions = KeyboardActions(onDone = {checkAnswer()}),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = true),
+        // keyboardActions = KeyboardActions(onDone = {  }),
         modifier = Modifier
             .fillMaxSize()
             .padding(

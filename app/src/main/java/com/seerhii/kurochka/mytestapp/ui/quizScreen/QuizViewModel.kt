@@ -1,10 +1,14 @@
 package com.seerhii.kurochka.mytestapp.ui.quizScreen
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.seerhii.kurochka.mytestapp.data.GoodSoundList
 import com.seerhii.kurochka.mytestapp.data.QuestionList
 import com.seerhii.kurochka.mytestapp.data.QuestionPicturesList
 import com.seerhii.kurochka.mytestapp.data.VeryGoodPicturesList
 import com.seerhii.kurochka.mytestapp.data.WrongAnswerPicturesList
+import com.seerhii.kurochka.mytestapp.data.WrongSoundList
+import com.seerhii.kurochka.mytestapp.ui.untils.playSound
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,7 +37,21 @@ class QuizViewModel() : ViewModel() {
         _inputField.value = inputDta
     }
 
-    fun checkAnswer() {
+    fun playSoundInner(context: Context, correctAnswer: Boolean) {
+        if (correctAnswer) {
+            playSound(
+                context = context,
+                GoodSoundList.goodList[getRandomForList(GoodSoundList.goodList)]
+            )
+        } else {
+            playSound(
+                context = context,
+                WrongSoundList.wrongList[getRandomForList(WrongSoundList.wrongList)]
+            )
+        }
+    }
+
+    fun checkAnswer(context: Context) {
         try {
             if (QuestionList.question.size > numberOfQuestion) {
                 if (QuestionList.question[numberOfQuestion].answer == inputField.value.toInt()) {
@@ -47,21 +65,24 @@ class QuizViewModel() : ViewModel() {
                         _finishedQuiz.value = true
                     }
                     _inputField.value = ""
+                    playSoundInner(context, true)
                 } else {
                     _picturesOfAnswer.value =
                         WrongAnswerPicturesList.wrongPictures[getRandomForList(
                             WrongAnswerPicturesList.wrongPictures
                         )]
                     _inputField.value = ""
+                    playSoundInner(context, false)
                 }
             } else {
                 _finishedQuiz.value = true
+                playSoundInner(context, true)
             }
         } catch (e: NumberFormatException) {
             _picturesOfAnswer.value =
                 WrongAnswerPicturesList.wrongPictures[getRandomForList(WrongAnswerPicturesList.wrongPictures)]
+            playSoundInner(context, false)
             _inputField.value = ""
-
         }
     }
 
