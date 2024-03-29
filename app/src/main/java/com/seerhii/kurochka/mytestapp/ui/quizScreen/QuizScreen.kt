@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,20 +18,18 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seerhii.kurochka.mytestapp.R
+import com.seerhii.kurochka.mytestapp.ui.AppViewModelProvider
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 import com.seerhii.kurochka.mytestapp.ui.untils.GifImage
@@ -43,7 +40,17 @@ object QuizDestination : NavigationDestination {
 }
 
 @Composable
-fun QuizScreen() {
+fun QuizScreen(
+    navigateToBack: () -> Unit,
+    quizViewModel: QuizViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+
+    val picturesUiState by quizViewModel.picturesOfAnswer.collectAsStateWithLifecycle()
+    val questionStringUiState by quizViewModel.questionString.collectAsStateWithLifecycle()
+    val inputFieldUiState by quizViewModel.inputField.collectAsStateWithLifecycle()
+    val finishedQuizUiState by quizViewModel.finishedQuiz.collectAsStateWithLifecycle()
+
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Gray
@@ -64,15 +71,19 @@ fun QuizScreen() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    GifImage(imageID = R.drawable.excellent2)
+                    GifImage(imageID = picturesUiState)
                     Text(
-                        text = "Question text",
+                        text = questionStringUiState,
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.White,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(dimensionResource(R.dimen.text_padding))
                     )
-                    ShowInputText()
+                    ShowInputText(
+                        inputFieldUiState = inputFieldUiState,
+                        writeAnswer = quizViewModel::writeAnswer,
+                        checkAnswer = quizViewModel::checkAnswer
+                    )
                     Divider(
                         Modifier.padding(
                             start = dimensionResource(R.dimen.divider_padding),
@@ -82,10 +93,20 @@ fun QuizScreen() {
                         ), color = Color.White
                     )
                     Button(
-                        onClick = {},
+                        onClick = {
+                            if (finishedQuizUiState) {
+                                navigateToBack()
+                            } else {
+                                quizViewModel.checkAnswer()
+                            }
+                        },
                         enabled = true
                     ) {
-                        Text(stringResource(R.string.submit))
+                        if (finishedQuizUiState) {
+                            Text(stringResource(R.string.exit))
+                        } else {
+                            Text(stringResource(R.string.submit))
+                        }
                     }
                 }
             }
@@ -94,31 +115,27 @@ fun QuizScreen() {
 }
 
 @Composable
-fun ShowInputText() {
-    // val keyboardController = LocalSoftwareKeyboardController.current
-    var text by rememberSaveable { mutableStateOf("") }
+fun ShowInputText(
+    inputFieldUiState: String,
+    writeAnswer: (String) -> Unit,
+    checkAnswer: () -> Unit
+) {
     TextField(
-        value = text,
-        onValueChange = { text = it },
+        value = inputFieldUiState,
+        onValueChange = { writeAnswer(it) },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Gray,
             unfocusedContainerColor = Color.Gray,
             disabledContainerColor = Color.White,
         ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//        keyboardActions = KeyboardActions(
-//            onDone = {
-//                keyboardController?.hide()
-//                // do something here
-//            }
-//        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardActions = KeyboardActions(onDone = {checkAnswer()}),
         modifier = Modifier
             .fillMaxSize()
             .padding(
                 start = dimensionResource(R.dimen.divider_padding),
                 end = dimensionResource(R.dimen.divider_padding)
             )
-
     )
 }
 
@@ -126,6 +143,6 @@ fun ShowInputText() {
 @Composable
 fun GreetingPreview() {
     MyTestAppTheme {
-        QuizScreen()
+        QuizScreen({})
     }
 }

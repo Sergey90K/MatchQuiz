@@ -30,7 +30,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.seerhii.kurochka.mytestapp.R
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
@@ -48,7 +47,7 @@ fun MenuScreen(
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.Red
+        color = Color.Blue
     ) {
         Column {
             Row(
@@ -116,7 +115,7 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 ShowCard(navigateToQuiz, R.drawable.mathsnew, stringResource(R.string.match_quiz))
-                ShowCard({}, R.drawable.ic_launcher_foreground, stringResource(R.string.learn))
+                ShowCard({}, R.drawable.story, stringResource(R.string.learn))
             }
             Row(
                 Modifier
@@ -126,10 +125,10 @@ fun ShowAllCard(navigateToQuiz: () -> Unit, navigateToQuestion: () -> Unit) {
             ) {
                 ShowCard(
                     { },
-                    R.drawable.ic_launcher_foreground,
+                    R.drawable.artdraw,
                     stringResource(R.string.multiplayer)
                 )
-                ShowCard({}, R.drawable.ic_launcher_foreground, stringResource(R.string.draw))
+                ShowCard({}, R.drawable.lessons, stringResource(R.string.draw))
 
             }
             Row(

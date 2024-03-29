@@ -30,7 +30,7 @@ fun AppNavGraph(navController: NavHostController) {
             )
         }
         composable(route = QuizDestination.route) {
-            QuizScreen()
+            QuizScreen(navigateToBack = { navController.navigateUp() })
         }
         composable(route = QuestionDestination.route) {
             QuestionScreen()
