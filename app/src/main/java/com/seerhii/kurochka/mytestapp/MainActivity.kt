@@ -13,7 +13,6 @@ import com.seerhii.kurochka.mytestapp.ui.MatchApp
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -28,6 +27,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 @Preview(showBackground = true, apiLevel = 33)
 @Composable

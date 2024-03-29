@@ -16,7 +16,6 @@ import com.seerhii.kurochka.mytestapp.ui.navigation.AppNavGraph
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchApp(
-
     navController: NavHostController = rememberNavController()){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 

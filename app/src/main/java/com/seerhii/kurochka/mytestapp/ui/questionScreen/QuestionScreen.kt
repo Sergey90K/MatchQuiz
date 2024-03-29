@@ -1,5 +1,7 @@
 package com.seerhii.kurochka.mytestapp.ui.questionScreen
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +26,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.seerhii.kurochka.mytestapp.R
+import com.seerhii.kurochka.mytestapp.ui.AppViewModelProvider
 import com.seerhii.kurochka.mytestapp.ui.navigation.NavigationDestination
 import com.seerhii.kurochka.mytestapp.ui.theme.MyTestAppTheme
 
@@ -32,13 +40,28 @@ object QuestionDestination : NavigationDestination {
     override val titleRes = R.string.question_screen
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun QuestionScreen() {
+fun QuestionScreen(questionViewModel: QuestionViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+    val permissionState = rememberPermissionState(
+        permission = Manifest.permission.RECORD_AUDIO
+    )
+    SideEffect {
+        permissionState.launchPermissionRequest()
+    }
+    val speechRecognizerLauncher = rememberLauncherForActivityResult(
+        contract = SpeechRecognizerContract(),
+        onResult = {
+            questionViewModel.changeTextValue(it.toString())
+        }
+    )
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Gray
     ) {
         Box(contentAlignment = Alignment.Center) {
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -55,7 +78,13 @@ fun QuestionScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            if (permissionState.status.isGranted) {
+                                speechRecognizerLauncher.launch(Unit)
+                            } else {
+                                permissionState.launchPermissionRequest()
+                            }
+                        },
                         Modifier.size(dimensionResource(R.dimen.icon_button))
                     ) {
                         Image(
@@ -71,26 +100,32 @@ fun QuestionScreen() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(
-                            text = "Question Asked: ",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier.padding(dimensionResource(R.dimen.text_padding))
-                        )
-
-                        Text(
-                            text = "Answer: ",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier.padding(dimensionResource(R.dimen.text_padding))
-                        )
+                        if (questionViewModel.state.text != null) {
+                            ShowText(textString = questionViewModel.state.text!!)
+                        } else {
+                            ShowText(textString = "Question Asked: ")
+                        }
+                        if (questionViewModel.answerState.text != null) {
+                            ShowText(textString = questionViewModel.answerState.text!!)
+                        } else {
+                            ShowText(textString = "Answer: ")
+                        }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun ShowText(textString: String) {
+    Text(
+        text = textString,
+        style = MaterialTheme.typography.bodyLarge,
+        color = Color.Black,
+        textAlign = TextAlign.Start,
+        modifier = Modifier.padding(dimensionResource(R.dimen.text_padding))
+    )
 }
 
 @Preview(showBackground = true, apiLevel = 33)
