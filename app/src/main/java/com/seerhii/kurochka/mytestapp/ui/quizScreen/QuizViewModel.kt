@@ -60,11 +60,12 @@ class QuizViewModel() : ViewModel() {
                     numberOfQuestion++
                     if (QuestionList.question.size > numberOfQuestion) {
                         _questionString.value = QuestionList.question[numberOfQuestion].questionText
+                        _inputField.value = ""
                     } else {
                         _questionString.value = "You have answered everything correctly."
                         _finishedQuiz.value = true
+                        _inputField.value = "The questions are over."
                     }
-                    _inputField.value = ""
                     playSoundInner(context, true)
                 } else {
                     _picturesOfAnswer.value =
