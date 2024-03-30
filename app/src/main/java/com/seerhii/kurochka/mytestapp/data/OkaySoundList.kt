@@ -6,6 +6,9 @@ object OkaySoundList {
     val okayList = listOf(
         R.raw.okay_1,
         R.raw.okay_2,
-        R.raw.good_3
+        R.raw.good_3,
+        R.raw.not_bad_1,
+        R.raw.not_bad_2,
+        R.raw.not_bad_3
     )
 }
