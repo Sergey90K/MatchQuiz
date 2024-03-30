@@ -2,6 +2,11 @@ package com.seerhii.kurochka.mytestapp.ui.questionScreen
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -100,16 +105,37 @@ fun QuestionScreen(questionViewModel: QuestionViewModel = viewModel(factory = Ap
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.Start
                     ) {
-                        if (questionViewModel.state.text != null) {
-                            ShowText(textString = questionViewModel.state.text!!)
-                        } else {
-                            ShowText(textString = "Question Asked: ")
-                        }
-                        if (questionViewModel.answerState.text != null) {
-                            ShowText(textString = questionViewModel.answerState.text!!)
-                        } else {
-                            ShowText(textString = "Answer: ")
-                        }
+                        AnimatedVisibility(
+                            questionViewModel.state.text != null,
+                            enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+                            exit = scaleOut() + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+                        ) { ShowText(textString = questionViewModel.state.text!!) }
+                        AnimatedVisibility(
+                            questionViewModel.state.text == null,
+                            enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+                            exit = scaleOut() + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+                        ) { ShowText(textString = "Question Asked: ") }
+                        AnimatedVisibility(
+                            questionViewModel.answerState.text != null,
+                            enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+                            exit = scaleOut() + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+                        ) {  ShowText(textString = questionViewModel.answerState.text!!) }
+                        AnimatedVisibility(
+                            questionViewModel.answerState.text == null,
+                            enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+                            exit = scaleOut() + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+                        ) {  ShowText(textString = "Answer: ")}
+
+//                        if (questionViewModel.state.text != null) {
+//                            ShowText(textString = questionViewModel.state.text!!)
+//                        } else {
+//                            ShowText(textString = "Question Asked: ")
+//                        }
+//                        if (questionViewModel.answerState.text != null) {
+//                            ShowText(textString = questionViewModel.answerState.text!!)
+//                        } else {
+//                            ShowText(textString = "Answer: ")
+//                        }
                     }
                 }
             }
